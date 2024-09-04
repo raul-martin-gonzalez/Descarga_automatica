@@ -7,7 +7,7 @@ steps:
   - id: "push image"
     name: "gcr.io/cloud-builders/docker"
     entrypoint: docker
-    args: ["push", "europe-west1-docker.pkg.dev/$PROJECT_ID/descarga/descarga_automatica", "--all-tags"]
+    args: ["push", "europe-west1-docker.pkg.dev/$PROJECT_ID/descarga/descarga_automatica", "--all-tags"] 
 
 
   - id: "Deploy to cloud Run"
