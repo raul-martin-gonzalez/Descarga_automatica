@@ -12,7 +12,7 @@ def view_descarga (request):
     print(i+v)
     print('parece que funciona')
     print('ya estamos ens internet')
-    time.sleep(15)
+    time.sleep(25)
     # Cierra el servidor Django
     shutdown_server()
     
