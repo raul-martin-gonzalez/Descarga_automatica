@@ -16,7 +16,7 @@ steps:
     args: [
       "run", 
       "deploy", 
-      "app-django", 
+      "app-descarga", 
       "--image=europe-west1-docker.pkg.dev/$PROJECT_ID/descarga/descarga_automatica:latest",
       "--allow-unauthenticated",
       "--port=8000",
