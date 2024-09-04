@@ -15,8 +15,12 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support import expected_conditions as EC
 from google.cloud import storage
 import sys
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
 
 # Create your views here.
+@csrf_exempt
+@require_http_methods(["POST"])
 def view_descarga (request):
     print('Hola aqui empieza todo')
     i = 3
