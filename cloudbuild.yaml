@@ -20,6 +20,7 @@ steps:
       "--image=europe-west1-docker.pkg.dev/$PROJECT_ID/descarga/descarga_automatica:latest",
       "--allow-unauthenticated",
       "--port=8000",
+      "--memory=1Gi",
       "--region=europe-west1",
       "--project=$PROJECT_ID",
     ]
