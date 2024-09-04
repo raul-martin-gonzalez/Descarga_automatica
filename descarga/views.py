@@ -25,6 +25,8 @@ def view_descarga (request):
     print('parece que funciona')
     print('ya estamos ens internet')
     download_adn_upload()
+    
+    print('funcion terminada')
     time.sleep(10)
     # Cierra el servidor Django
     shutdown_server()
@@ -105,3 +107,70 @@ def download_adn_upload():
         pass #continua la ejecucion incluso si ocurre un error
 
     driver.close()
+    
+    def obtener_archivo_mas_reciente(directorio):
+        # Listar todos los archivos en el directorio
+        archivos = os.listdir(directorio)
+        # Filtrar archivos que tengan la extensión .csv
+        archivos_csv = [archivo for archivo in archivos if archivo.endswith('.csv')]
+        # Si no hay archivos .csv, lanzar una excepción o manejar el caso
+        if not archivos_csv:
+            raise FileNotFoundError("No se encontraron archivos .csv en el directorio.")
+        # Obtener las rutas completas de los archivos .csv
+        rutas_archivos = [os.path.join(directorio, archivo) for archivo in archivos_csv]
+        # Encontrar el archivo .csv más reciente basado en la fecha de modificación.
+        archivo_reciente = max(rutas_archivos, key=os.path.getmtime)
+        # Imprimir la ruta del archivo más reciente (para depuración)
+        print(f"Archivo CSV más reciente: {archivo_reciente}")
+        return os.path.basename(archivo_reciente)
+
+    # Espera para asegurarse de que la descarga se complete
+    time.sleep(15)
+
+    # Obtén el archivo más reciente
+    nombre_archivo_descargado = obtener_archivo_mas_reciente(directorio)
+    print(f"Archivo descargado: {nombre_archivo_descargado}")
+
+    # Fecha actual
+    fecha_actual = datetime.now().strftime('%Y-%m-%d') #Formato: YYYY-MM-DD
+
+    # Nuevo nombre para el archivo
+    nombre_final = f'Precio_luz_{fecha_actual}.csv'
+
+    # Ruta completa al archivo descargado
+    ruta_descargado = os.path.join(directorio, nombre_archivo_descargado)
+
+    # Ruta completa al archivo renombrado
+    ruta_final = os.path.join(directorio, nombre_final)
+
+    # Renombrar el archivo
+    os.rename(ruta_descargado, ruta_final)
+    print(f'Archivo renombrado a {nombre_final}')
+    
+    # ruta_credenciales = r'C:\Users\raulm\AppData\Roaming\gcloud\application_default_credentials.json'
+
+    # Subir el archivo descargado a Google Cloud Storage
+    def upload_to_gcs (bucket_name, source_file_name, destination_blob_name):
+        print(f"Verificando el archivo: {source_file_name}") # Depuración
+        
+        # Verifica si la ruta es un archivo
+        if not os.path.isfile(source_file_name):
+            print(source_file_name)
+            print(f"Contenido del directorio /tmp: {os.listdir('/tmp')}")  # Depuración adicional
+            raise ValueError(f"{source_file_name} no es un archivo válido o no existe.")
+            
+        storage_client = storage.Client(project='practica-django')
+        bucket = storage_client.bucket(bucket_name)
+        blob = bucket.blob(destination_blob_name)
+        blob.upload_from_filename(source_file_name)
+        
+        print(f'Archivo {nombre_final} subido a {destination_blob_name}.')
+        # Sube el archivo usando el objeto de archivo.
+    bucket_name = 'descarga_automatizacion'
+    
+    downloaded_file = max([os.path.join(directorio, f) for f in os.listdir(directorio)], key=os.path.getctime)
+    
+    # nombre_archivo_local = os.path.join(directorio, nombre_final)
+    nombre_archivo_gcs = f'datos_precio_luz/{nombre_final}'
+
+    upload_to_gcs(bucket_name, downloaded_file, nombre_archivo_gcs)
