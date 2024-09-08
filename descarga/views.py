@@ -65,7 +65,7 @@ def download_adn_upload():
     driver.maximize_window()
     url = 'https://www.esios.ree.es/es/pvpc'
     driver.get(url)
-    time.sleep(10)
+    time.sleep(15)
 
 
     try:
@@ -87,11 +87,11 @@ def download_adn_upload():
 
     try:
         driver.execute_script("window.scrollBy(0, 1200);") # Desplazamiento scroll
-        time.sleep(5)
+        time.sleep(20)
         boton_exportacion = driver.find_element(By.ID, "export_multiple")
         boton_exportacion.click()
         # Esperar a que el menú desplegable esté visible
-        wait = WebDriverWait(driver, 10)
+        wait = WebDriverWait(driver, 20)
         options_select = wait.until(EC.visibility_of_element_located((By.CLASS_NAME, 'options_select')))
 
         # Encontrar y hacer clic en la primera opción (CSV)
@@ -101,10 +101,10 @@ def download_adn_upload():
         
         actions = ActionChains(driver)
         actions.move_to_element(csv_option).perform()
-        time.sleep(5)
+        time.sleep(15)
         # Hacer clic en el elemento después del hover
         csv_option.click()
-        time.sleep(10)
+        time.sleep(25)
         
     except Exception as e:
         print(f'Error al interactuar con la página de datos o exportación: {e}')
@@ -129,7 +129,7 @@ def download_adn_upload():
         return os.path.basename(archivo_reciente)
 
     # Espera para asegurarse de que la descarga se complete
-    time.sleep(15)
+    time.sleep(25)
 
     # Obtén el archivo más reciente
     nombre_archivo_descargado = obtener_archivo_mas_reciente(directorio)
