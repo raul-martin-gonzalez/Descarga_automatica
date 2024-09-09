@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse 
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 import pandas as pd
 import mysql.connector
 import os
@@ -86,7 +86,21 @@ def download_adn_upload():
     driver.switch_to.window(windows[-1])
 
     try:
-        driver.execute_script("window.scrollBy(0, 1200);") # Desplazamiento scroll
+        # Obtener la fecha de hoy
+        hoy = datetime.now().date()
+        # Restar un día para obtener la fecha de ayer
+        ayer = hoy - timedelta(days=1)
+        # Formatear la fecha de ayer en DD/MM/YYYY
+        ayer_formateado = ayer.strftime("%d / %m / %Y")
+        print(ayer_formateado, type(ayer_formateado))
+        driver.execute_script("window.scrollBy(0, 500);") # Desplazamiento scroll
+        inicio = driver.find_element(By.ID, "start-date")
+        time.sleep(5)
+        inicio.clear()
+        time.sleep(5)
+        inicio.send_keys(ayer_formateado + Keys.RETURN)
+        time.sleep(5)
+        driver.execute_script("window.scrollBy(0, 700);") # Desplazamiento scroll
         time.sleep(20)
         boton_exportacion = driver.find_element(By.ID, "export_multiple")
         boton_exportacion.click()
